@@ -265,7 +265,7 @@
             }, 0);
             const avgAttendancePercent = filteredStudents.length ? (totalAttendance / filteredStudents.length * 100).toFixed(1) : 0;
             avgAttendance.textContent = `${avgAttendancePercent}%`;
-            recentActivity.innerHTML = '';
+            
             const filteredLog = selectedDept ? activityLog.filter(log => {
                 const student = students.find(s => s.rollNo === log.rollNo);
                 return student && student.department === selectedDept;
