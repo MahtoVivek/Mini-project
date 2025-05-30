@@ -249,7 +249,7 @@
         }
         const studentCount = document.getElementById('studentCount');
         const avgAttendance = document.getElementById('avgAttendance');
-        const recentActivity = document.getElementById('recentActivity');
+        
         const departmentFilter = document.getElementById('departmentFilter');
         const hamburger = document.querySelector('.hamburger');
         const navMenu = document.getElementById('navMenu');
@@ -265,6 +265,7 @@
             }, 0);
             const avgAttendancePercent = filteredStudents.length ? (totalAttendance / filteredStudents.length * 100).toFixed(1) : 0;
             avgAttendance.textContent = `${avgAttendancePercent}%`;
+            recentActivity.innerHTML = '';
             
             const filteredLog = selectedDept ? activityLog.filter(log => {
                 const student = students.find(s => s.rollNo === log.rollNo);
