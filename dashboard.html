@@ -272,8 +272,6 @@
             }) : activityLog;
             filteredLog.slice(-5).reverse().forEach(log => {
                 const li = document.createElement('li');
-                const date = new Date(log.timestamp).toLocaleString('en-US', {
-                    year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
                 li.textContent = `[${date}] ${log.action} - ${log.studentName} (Roll: ${log.rollNo})`;
                 recentActivity.appendChild(li);
