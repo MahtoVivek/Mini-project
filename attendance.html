@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - Attendance & Course Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f4f9;
+            padding: 20px;
+            padding-top: 80px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #007bff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .navbar ul li {
+            margin: 0 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s, color 0.3s;
+        }
+        .navbar a i {
+            margin-right: 8px;
+        }
+        .navbar a:hover {
+            transform: scale(1.1);
+            color: #ffc107;
+        }
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .hamburger:hover {
+            transform: rotate(90deg);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            animation: tableFadeIn 0.5s ease-out;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 16px;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .export-btn {
+            background-color: #dc3545;
+        }
+        .export-btn:hover {
+            background-color: #c82333;
+        }
+        .success-message {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 20px auto;
+            text-align: center;
+            font-size: 16px;
+            max-width: 400px;
+            animation: successFade 3s ease-out;
+        }
+        .success-message i {
+            margin-right: 8px;
+        }
+        .no-data {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin: 20px 0;
+            display: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes tableFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes successFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(10px); }
+        }
+        @keyframes slideInMenu {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; padding-top: 60px; }
+            .navbar { padding: 10px; }
+            .navbar ul {
+                display: none;
+                flex-direction: column;
+                background-color: #007bff;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                padding: 10px 0;
+                animation: slideInMenu 0.3s ease;
+            }
+            .navbar ul.active { display: flex; }
+            .navbar li { margin: 10px 0; text-align: center; }
+            .navbar a { font-size: 16px; }
+            .hamburger {
+                display: block;
+                position: absoluteorus top;
+                top: 15px;
+                right: 20px;
+            }
+            .container { padding: 10px; }
+            h1, h2 { font-size: 20px; }
+            table, th, td { font-size: 12px; }
+            th, td { padding: 8px; }
+            th:nth-child(5), td:nth-child(5), th:nth-child(6), td:nth-child(6) { display: none; }
+            select, input[type="text"] { font-size: 14px; padding: 8px; }
+            button { width: 100%; font-size: 14px; padding: 8px; }
+            .success-message { font-size: 14px; }
+        }
+        @media (max-width: 400px) {
+            .navbar { animation: none; }
+            .navbar ul { animation: none; }
+            table { animation: none; }
+            .success-message { animation: none; display: block; opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+        <ul id="navMenu">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="index.html"><i class="fas fa-user-plus"></i> Add Student</a></li>
+            <li><a href="view.html"><i class="fas fa-list"></i> View Students</a></li>
+            <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> Attendance & Course</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Attendance & Course Management</h1>
+        <h2>Mark Attendance</h2>
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Course</th>
+                    <th>Department</th>
+                    <th>Today</th>
+                    <th>Attendance %</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceTableBody"></tbody>
+        </table>
+        <div id="noAttendance" class="no-data">No student data available</div>
+        <button id="saveAttendanceBtn"><i class="fas fa-save"></i> Save Attendance</button>
+        <h2>Change Course/Department</h2>
+        <div class="form-group">
+            <label for="studentSelect">Select Student</label>
+            <select id="studentSelect">
+                <option value="">-- Select Student --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="newCourse">New Course</label>
+            <input type="text" id="newCourse" placeholder="Enter new course">
+        </div>
+        <div class="form-group">
+            <label for="newDepartment">New Department</label>
+            <select id="newDepartment">
+                <option value="CSE">Computer Science Engineering</option>
+                <option value="ECE">Electronics & Communication Engineering</option>
+                <option value="ME">Mechanical Engineering</option>
+                <option value="EE">Electrical Engineering</option>
+            </select>
+        </div>
+        <button id="updateCourseBtn"><i class="fas fa-exchange-alt"></i> Update Course/Department</button>
+        <h2>Export Reports</h2>
+        <button class="export-btn" id="exportAttendancePdfBtn"><i class="fas fa-file-pdf"></i> Export Attendance (PDF)</button>
+        <button class="export-btn" id="exportStudentsPdfBtn"><i class="fas fa-file-pdf"></i> Export Students (PDF)</button>
+        <button class="export-btn" id="exportAttendanceExcelBtn"><i class="fas fa-file-excel"></i> Export Attendance (Excel)</button>
+        <button class="export-btn" id="exportStudentsExcelBtn"><i class="fas fa-file-excel"></i> Export Students (Excel)</button>
+        <div id="successMessage" class="success-message"><i class="fas fa-check-circle"></i> Action completed successfully!</div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // Load data
+        let students = [];
+        let activityLog = [];
+        try {
+            const storedStudents = localStorage.getItem('students');
+            if (storedStudents) students = JSON.parse(storedStudents);
+            if (!Array.isArray(students)) students = [];
+            const storedLog = localStorage.getItem('activityLog');
+            if (storedLog) activityLog = JSON.parse(storedLog);
+            if (!Array.isArray(activityLog)) activityLog = [];
+        } catch (e) {
+            console.error('Error loading data:', e);
+            students = [];
+            activityLog = [];
+        }
+
+        // Get DOM elements
+        const attendanceTableBody = document.getElementById('attendanceTableBody');
+        const noAttendance = document.getElementById('noAttendance');
+        const saveAttendanceBtn = document.getElementById('saveAttendanceBtn');
+        const studentSelect = document.getElementById('studentSelect');
+        const newCourseInput = document.getElementById('newCourse');
+        const newDepartmentSelect = document.getElementById('newDepartment');
+        const updateCourseBtn = document.getElementById('updateCourseBtn');
+        const exportAttendancePdfBtn = document.getElementById('exportAttendancePdfBtn');
+        const exportStudentsPdfBtn = document.getElementById('exportStudentsPdfBtn');
+        const exportAttendanceExcelBtn = document.getElementById('exportAttendanceExcelBtn');
+        const exportStudentsExcelBtn = document.getElementById('exportStudentsExcelBtn');
+        const successMessage = document.getElementById('successMessage');
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        // Toggle hamburger menu
+        hamburger.addEventListener('click', () => navMenu.classList.toggle('active'));
+
+        // Render attendance table
+        function renderAttendanceTable() {
+            attendanceTableBody.innerHTML = '';
+            if (!students.length) {
+                noAttendance.style.display = 'block';
+                return;
+            }
+            noAttendance.style.display = 'none';
+            const today = new Date().toISOString().split('T')[0];
+            students.forEach(student => {
+                const attendance = student.attendance || [];
+                const presentDays = attendance.filter(record => record.present).length;
+                const attendancePercent = attendance.length ? (presentDays / attendance.length * 100).toFixed(1) : 0;
+                const todayAttendance = attendance.find(record => record.date === today);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.rollNo}</td>
+                    <td>${student.course}</td>
+                    <td>${student.department}</td>
+                    <td><input type="checkbox" data-id="${student.id}" ${todayAttendance && todayAttendance.present ? 'checked' : ''}></td>
+                    <td>${attendancePercent}%</td>
+                `;
+                attendanceTableBody.appendChild(row);
+            });
+        }
+
+        // Populate student dropdown
+        function populateStudentDropdown() {
+            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.name} (Roll: ${student.rollNo})`;
+                studentSelect.appendChild(option);
+            });
+        }
+
+        // Save attendance
+        saveAttendanceBtn.addEventListener('click', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const checkboxes = attendanceTableBody.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const studentId = checkbox.dataset.id;
+                const student = students.find(s => s.id === studentId);
+                if (student) {
+                    student.attendance = student.attendance || [];
+                    const existing = student.attendance.find(record => record.date === today);
+                    if (existing) {
+                        existing.present = checkbox.checked;
+                    } else {
+                        student.attendance.push({ date: today, present: checkbox.checked });
+                    }
+                    student.updatedAt = new Date().toISOString();
+                }
+            });
+            try {
+                localStorage.setItem('students', JSON.stringify(students));
+                showSuccess('Attendance saved successfully!');
+            } catch (e) {
+                console.error('Error saving attendance:', e);
+                alert('Failed to save attendance.');
+            }
+        });
+
+        // Update course/department
+        updateCourseBtn.addEventListener('click', () => {
+            const studentId = studentSelect.value;
+            const newCourse = newCourseInput.value.trim();
+            const newDepartment = newDepartmentSelect.value;
+            if (!studentId || (!newCourse && !newDepartment)) {
+                alert('Please select a student and provide a new course or department.');
+                return;
+            }
+            const student = students.find(s => s.id === studentId);
+            if (student) {
+                if (newCourse) student.course = newCourse;
+                if (newDepartment) student.department = newDepartment;
+                student.updatedAt = new Date().toISOString();
+                activityLog.push({
+                    id: Date.now().toString(),
+                    timestamp: new Date().toISOString(),
+                    action: 'Updated Course/Department',
+                    studentName: student.name,
+                    rollNo: student.rollNo
+                });
+                try {
+                    localStorage.setItem('students', JSON.stringify(students));
+                    localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                    renderAttendanceTable();
+                    populateStudentDropdown();
+                    newCourseInput.value = '';
+                    studentSelect.value = '';
+                    showSuccess('Course/Department updated successfully!');
+                } catch (e) {
+                    console.error('Error updating data:', e);
+                    alert('Failed to update course/department.');
+                }
+            }
+        });
+
+        // Show success message
+        function showSuccess(message) {
+            successMessage.querySelector('span').textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => successMessage.style.display = 'none', 3000);
+        }
+
+        // Export Attendance PDF
+        exportAttendancePdfBtn.addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text('Attendance Report', 20, 20);
+            doc.setFontSize(12);
+            const data = [['Name', 'Roll No', 'Attendance %']];
+            students.forEach(student => {
+                const attendance = student.attendance || [];
+                const presentDays = attendance.filter(record => record.present).length;
+                const percent = attendance.length ? (presentDays / attendance.length * 100).toFixed(1) : 0;
+                data.push([student.name, student.rollNo, `${percent}%`]);
+            });
+            doc.autoTable({
+                startY: 30,
+                head: [data[0]],
+                body: data.slice(1),
+                theme: 'grid',
+                styles: { fontSize: 10 }
+            });
+            doc.save('attendance_report.pdf');
+            showSuccess('Attendance PDF exported successfully!');
+        });
+
+        // Export Students PDF
+        exportStudentsPdfBtn.addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text('Student Report', 20, 20);
+            doc.setFontSize(12);
+            const data = [['Name', 'Roll No', 'Course', 'Department', 'Session', 'Phone', 'Attendance %']];
+            students.forEach(student => {
+                const attendance = student.attendance || [];
+                const presentDays = attendance.filter(record => record.present).length;
+                const percent = attendance.length ? (presentDays / attendance.length * 100).toFixed(1) : 0;
+                data.push([student.name, student.rollNo, student.course, student.department, student.session, student.phone, `${percent}%`]);
+            });
+            doc.autoTable({
+                startY: 30,
+                head: [data[0]],
+                body: data.slice(1),
+                theme: 'grid',
+                styles: { fontSize: 10 }
+            });
+            doc.save('students_report.pdf');
+            showSuccess('Students PDF exported successfully!');
+        });
+
+        // Export Attendance Excel
+        exportAttendanceExcelBtn.addEventListener('click', () => {
+            const data = students.map(student => {
+                const attendance = student.attendance || [];
+                const presentDays = attendance.filter(record => record.present).length;
+                const percent = attendance.length ? (presentDays / attendance.length * 100).toFixed(1) : 0;
+                return {
+                    Name: student.name,
+                    'Roll No': student.rollNo,
+                    'Attendance %': percent
+                };
+            });
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
+            XLSX.write(wb, 'attendance_report.xlsx');
+            showSuccess('Attendance Excel exported successfully!');
+        });
+
+        // Export Students Excel
+        exportStudentsExcelBtn.addEventListener('click', () => {
+            const data = students.map(student => {
+                const attendance = student.attendance || [];
+                const presentDays = attendance.filter(record => record.present).length;
+                const percent = attendance.length ? (presentDays / attendance.length * 100).toFixed(1) : 0;
+                return {
+                    Name: student.name,
+                    'Roll No': student.rollNo,
+                    Course: student.course,
+                    Department: student.department,
+                    Session: student.session,
+                    Phone: student.phone,
+                    'Attendance %': percent
+                };
+            });
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Students');
+            XLSX.write(wb, 'students_report.xlsx');
+            showSuccess('Students Excel exported successfully!');
+        });
+
+        // Initialize
+        renderAttendanceTable();
+        populateStudentDropdown();
+    </script>
+</body>
+</html>

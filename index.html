@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - Add Student</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f4f9;
+            padding: 20px;
+            padding-top: 80px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #007bff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .navbar ul li {
+            margin: 0 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s, color 0.3s;
+        }
+        .navbar a i {
+            margin-right: 8px;
+        }
+        .navbar a:hover {
+            transform: scale(1.1);
+            color: #ffc107;
+        }
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .hamburger:hover {
+            transform: rotate(90deg);
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 16px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 16px;
+            animation: successFade 3s ease-out;
+        }
+        .success-message i {
+            margin-right: 8px;
+        }
+        .ripple {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(0, 123, 255, 0.3);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes slideInMenu {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        @keyframes successFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(10px); }
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; padding-top: 60px; }
+            .navbar { padding: 10px; }
+            .navbar ul {
+                display: none;
+                flex-direction: column;
+                background-color: #007bff;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                padding: 10px 0;
+                animation: slideInMenu 0.3s ease-out;
+            }
+            .navbar ul.active { display: flex; }
+            .navbar li { margin: 10px 0; text-align: center; }
+            .navbar a { font-size: 16px; }
+            .hamburger {
+                display: block;
+                position: absolute;
+                top: 15px;
+                right: 20px;
+            }
+            .container { padding: 10px; }
+            h1 { font-size: 20px; }
+            label { font-size: 14px; }
+            input[type="text"],
+            input[type="tel"],
+            select { font-size: 14px; padding: 8px; }
+            button { width: 100%; font-size: 14px; padding: 8px; }
+            .error { font-size: 12px; }
+            .success-message { font-size: 14px; padding: 8px; }
+            .checkbox-group label { font-size: 14px; }
+        }
+        @media (max-width: 400px) {
+            .navbar { animation: none; }
+            .navbar ul { animation: none; }
+            .ripple { display: none; }
+            .success-message {
+                animation: none;
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+        <ul id="navMenu">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="index.html"><i class="fas fa-user-plus"></i> Add Student</a></li>
+            <li><a href="view.html"><i class="fas fa-list"></i> View Students</a></li>
+            <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> Attendance & Course</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Student Management System</h1>
+        <form id="studentForm">
+            <div class="form-group">
+                <label for="name">Student Name</label>
+                <input type="text" id="name" placeholder="Enter name" required>
+                <div id="nameError" class="error">Name is required</div>
+            </div>
+            <div class="form-group">
+                <label for="rollNo">Roll No</label>
+                <input type="text" id="rollNo" placeholder="Enter roll number" required>
+                <div id="rollNoError" class="error">Roll No is required and must be unique</div>
+            </div>
+            <div class="form-group">
+                <label for="course">Course</label>
+                <input type="text" id="course" placeholder="Enter course" required>
+                <div id="courseError" class="error">Course is required</div>
+            </div>
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" required>
+                    <option value="CSE">Computer Science Engineering</option>
+                    <option value="ECE">Electronics & Communication Engineering</option>
+                    <option value="ME">Mechanical Engineering</option>
+                    <option value="EE">Electrical Engineering</option>
+                </select>
+                <div id="departmentError" class="error">Department is required</div>
+            </div>
+            <div class="form-group">
+                <label for="session">Session</label>
+                <input type="text" id="session" placeholder="Enter session (e.g., 2023-2024)" required>
+                <div id="sessionError" class="error">Session is required</div>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter 10-digit phone number" required>
+                <div id="phoneError" class="error">Phone number must be 10 digits</div>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="attendance" checked>
+                <label for="attendance">Mark as present today</label>
+            </div>
+            <button type="submit" id="submitBtn">Add Student</button>
+        </form>
+        <div id="successMessage" class="success-message">
+            <i class="fas fa-check-circle"></i> Student saved successfully!
+        </div>
+    </div>
+    <script>
+        let students = [];
+        let activityLog = [];
+        try {
+            const storedStudents = localStorage.getItem('students');
+            if (storedStudents) students = JSON.parse(storedStudents);
+            if (!Array.isArray(students)) students = [];
+            const storedLog = localStorage.getItem('activityLog');
+            if (storedLog) activityLog = JSON.parse(storedLog);
+            if (!Array.isArray(activityLog)) activityLog = [];
+        } catch (e) {
+            console.error('Error loading data:', e);
+            students = [];
+            activityLog = [];
+        }
+        const studentForm = document.getElementById('studentForm');
+        const nameInput = document.getElementById('name');
+        const rollNoInput = document.getElementById('rollNo');
+        const courseInput = document.getElementById('course');
+        const departmentSelect = document.getElementById('department');
+        const sessionInput = document.getElementById('session');
+        const phoneInput = document.getElementById('phone');
+        const attendanceInput = document.getElementById('attendance');
+        const submitBtn = document.getElementById('submitBtn');
+        const nameError = document.getElementById('nameError');
+        const rollNoError = document.getElementById('rollNoError');
+        const courseError = document.getElementById('courseError');
+        const departmentError = document.getElementById('departmentError');
+        const sessionError = document.getElementById('sessionError');
+        const phoneError = document.getElementById('phoneError');
+        const successMessage = document.getElementById('successMessage');
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.getElementById('navMenu');
+        let editId = null;
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editIndex = parseInt(urlParams.get('edit'));
+            if (!isNaN(editIndex) && students[editIndex]) {
+                const student = students[editIndex];
+                nameInput.value = student.name;
+                rollNoInput.value = student.rollNo;
+                courseInput.value = student.course;
+                departmentSelect.value = student.department;
+                sessionInput.value = student.session;
+                phoneInput.value = student.phone;
+                const today = new Date().toISOString().split('T')[0];
+                const todayAttendance = student.attendance?.find(record => record.date === today);
+                attendanceInput.checked = todayAttendance ? todayAttendance.present : false;
+                editId = student.id;
+                submitBtn.textContent = 'Update Student';
+            }
+        };
+        hamburger.addEventListener('click', () => navMenu.classList.toggle('active'));
+        function validateForm() {
+            let isValid = true;
+            nameError.style.display = 'none';
+            rollNoError.style.display = 'none';
+            courseError.style.display = 'none';
+            departmentError.style.display = 'none';
+            sessionError.style.display = 'none';
+            phoneError.style.display = 'none';
+            if (!nameInput.value.trim()) {
+                nameError.style.display = 'block';
+                isValid = false;
+            }
+            const rollNoExists = students.some((student, index) => 
+                student.rollNo === rollNoInput.value && 
+                (editId ? student.id !== editId : true)
+            );
+            if (!rollNoInput.value.trim() || rollNoExists) {
+                rollNoError.style.display = 'block';
+                isValid = false;
+            }
+            if (!courseInput.value.trim()) {
+                courseError.style.display = 'block';
+                isValid = false;
+            }
+            if (!departmentSelect.value) {
+                departmentError.style.display = 'block';
+                isValid = false;
+            }
+            if (!sessionInput.value.trim()) {
+                sessionError.style.display = 'block';
+                isValid = false;
+            }
+            const phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(phoneInput.value)) {
+                phoneError.style.display = 'block';
+                isValid = false;
+            }
+            return isValid;
+        }
+        studentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validateForm()) {
+                const today = new Date().toISOString().split('T')[0];
+                const student = {
+                    id: editId || Date.now().toString(),
+                    name: nameInput.value.trim(),
+                    rollNo: rollNoInput.value.trim(),
+                    course: courseInput.value.trim(),
+                    department: departmentSelect.value,
+                    session: sessionInput.value.trim(),
+                    phone: phoneInput.value,
+                    updatedAt: new Date().toISOString(),
+                    attendance: editId ? (students.find(s => s.id === editId)?.attendance || []) : []
+                };
+                const existingAttendance = student.attendance.find(record => record.date === today);
+                if (existingAttendance) {
+                    existingAttendance.present = attendanceInput.checked;
+                } else {
+                    student.attendance.push({ date: today, present: attendanceInput.checked });
+                }
+                if (editId) {
+                    const index = students.findIndex(s => s.id === editId);
+                    if (index !== -1) students[index] = student;
+                    activityLog.push({
+                        id: Date.now().toString(),
+                        timestamp: new Date().toISOString(),
+                        action: 'Updated Student',
+                        studentName: student.name,
+                        rollNo: student.rollNo
+                    });
+                    editId = null;
+                    submitBtn.textContent = 'Add Student';
+                } else {
+                    students.push(student);
+                    activityLog.push({
+                        id: Date.now().toString(),
+                        timestamp: new Date().toISOString(),
+                        action: 'Added Student',
+                        studentName: student.name,
+                        rollNo: student.rollNo
+                    });
+                }
+                try {
+                    localStorage.setItem('students', JSON.stringify(students));
+                    localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                } catch (e) {
+                    console.error('Error saving data:', e);
+                    alert('Failed to save data. Storage may be full.');
+                    return;
+                }
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 3000);
+                studentForm.reset();
+                attendanceInput.checked = true;
+            }
+        });
+        document.addEventListener('click', (e) => {
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            ripple.style.width = ripple.style.height = '50px';
+            ripple.style.left = `${e.clientX - 25}px`;
+            ripple.style.top = `${e.clientY - 25}px`;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    </script>
+</body>
+</html>
